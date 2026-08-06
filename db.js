@@ -1,0 +1,193 @@
+import fs from 'fs';
+import path from 'path';
+
+const DB_PATH = path.resolve(process.cwd(), 'data.json');
+
+const initialData = {
+  settings: {
+    circlePasscode: '2023',
+    adminPin: '1234'
+  },
+  timeline: [
+    {
+      id: 'tl-1',
+      year: '2020',
+      tag: 'Awal Masuk & PJJ Covid-19',
+      title: 'Masa MPLS Online & Zoom Pertama',
+      description: 'Awal masuk SMK pas lagi gencar-gencarnya pandemi Covid-19. Kenalan sama temen-temen sekelas cuma lewat kamera Zoom & WhatsApp group. Pakai seragam SMP yang kekecilan di rumah!',
+      vibe: 'Zoom & Google Meet Era',
+      badge: '📱 PJJ Era'
+    },
+    {
+      id: 'tl-2',
+      year: '2021',
+      tag: 'Hybrid Class & Game Bareng',
+      title: 'Tugas Bejibun & Main Mobile Legends Pas PJJ',
+      description: 'Mulai terbiasa online class. Momen paling seru kalau guru lagi menerangkan, mic di-mute terus kita discord/Mabar ML atau imposter Among Us bareng circle. Kadang janjian ketemu diam-diam di warung kopi.',
+      vibe: 'Nongkrong Sembunyi-sembunyi',
+      badge: '🎮 Discord & Warkop'
+    },
+    {
+      id: 'tl-3',
+      year: '2022',
+      tag: 'Sekolah Offline & Masa PKL',
+      title: 'Akhirnya Tatap Muka & Pengalaman Magang',
+      description: 'Momen pertama kali ketemu fisik full sekelas setelah 2 tahun PJJ! Kaget temen-temen udah pada tinggi dan beda muka. Lanjut masa PKL/Magang yang bikin circle kita makin solid karena sering tukar cerita susahnya dunia kerja.',
+      vibe: 'Reuni Fisik & Praktek SMK',
+      badge: '🛠️ PKL & Bengkel/Lab'
+    },
+    {
+      id: 'tl-4',
+      year: '2023',
+      tag: 'Wisuda & Perpisahan Terakhir',
+      title: 'Coret-Coret Baju & Janji Tak Lupakan Masa SMK',
+      description: 'Tahun kelulusan yang dipenuhi haru. Coret-coret baju batik & seragam putih abu-abu, foto studio circle, dan malam perpisahan. Walau masa SMK kita kepotong Covid, 3 tahun ini adalah yang paling berkesan seumur hidup.',
+      vibe: 'Farewell Tears & New Journey',
+      badge: '🎓 Kelulusan 2023'
+    }
+  ],
+  memories: [
+    {
+      id: 'mem-1',
+      title: 'Foto Mabar Discord Pertama Pas PJJ 2020',
+      date: '2020-10-14',
+      category: 'Online Class',
+      tags: ['PJJ', 'Discord', 'Game'],
+      imageUrl: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80',
+      description: 'Lagi jam pelajaran produktif tapi gurunya cuma kasih tugas PDF. Langsung serbu room Discord circle buat ngerjain bareng sambil bercanda sampai sore.',
+      author: 'Circle Leader'
+    },
+    {
+      id: 'mem-2',
+      title: 'Nongkrong Pertama Setelah Pembatasan Diperlonggar',
+      date: '2021-06-20',
+      category: 'Nongkrong',
+      tags: ['Warkop', 'Masker', 'Kopi'],
+      imageUrl: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=1200&q=80',
+      description: 'Pertama kali circle kita kumpul komplit di warkop langganan dekat sekolah. Semua masih bawa masker dan parno, tapi tawa pecah pas ketemu langsung.',
+      author: 'Anggota Circle'
+    },
+    {
+      id: 'mem-3',
+      title: 'Momen Selesai Ujian Praktek Keahlian (UKK)',
+      date: '2022-11-05',
+      category: 'Sekolah',
+      tags: ['UKK', 'Lulus Praktek', 'Lab'],
+      imageUrl: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80',
+      description: 'Muka kecapekan habis diuji penguji eksternal pas UKK. Tapi leganya luar biasa pas diumumkan satu circle lulus semua dengan nilai bagus!',
+      author: 'Teman Seperjuangan'
+    },
+    {
+      id: 'mem-4',
+      title: 'Coret-Coret Seragam & Konvoi Kelulusan 2023',
+      date: '2023-05-12',
+      category: 'Farewell',
+      tags: ['Kelulusan', 'CoretBaju', 'Kenangan'],
+      imageUrl: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1200&q=80',
+      description: 'Tanda tangan di punggung baju seragam putih abu-abu dengan pilox dan spidol permanen. Hari itu nangis bareng karena sadar esok hari udah punya jalan masing-masing.',
+      author: 'Semua Anggota'
+    }
+  ],
+  members: [
+    {
+      id: 'mbr-1',
+      name: 'Rian "Kuncen Discord"',
+      role: 'Ketua Circle / Tech Guy',
+      quote: '“Gua AFK bentar ya, emak gua nyuruh beli beras.”',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
+      social: '@rian_smk23',
+      status: 'Kuliah & Sering Kangen Masa SMK'
+    },
+    {
+      id: 'mbr-2',
+      name: 'Bima "King Warkop"',
+      role: 'Seksi Konsumsi & Lawak',
+      quote: '“Tenang, tugas kelompok bagian presentasi serahin ke gua!”',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
+      social: '@bimax_smk',
+      status: 'Kerja & Tetap Nyari Kopi Murah'
+    },
+    {
+      id: 'mbr-3',
+      name: 'Dika "Kang Joki Tugas"',
+      role: 'Master Coding & Tugas',
+      quote: '“Sini gua kerjain, tapi traktir es teh 2 gelas ya.”',
+      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80',
+      social: '@dika_dev',
+      status: 'Kuliah IT Sambil Freelance'
+    },
+    {
+      id: 'mbr-4',
+      name: 'Salsa "Dokumentator Circle"',
+      role: 'Fotografer & Aesthetic Queen',
+      quote: '“Jangan makan dulu! Foto dulu buat story Instagram!”',
+      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80',
+      social: '@salsa_memories',
+      status: 'Bikin Konten & Kolektor Foto Kenangan'
+    }
+  ],
+  songs: [
+    {
+      id: 'sng-1',
+      title: 'Monokrom',
+      artist: 'Tulus',
+      albumCover: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=300&q=80',
+      audioUrl: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3',
+      tag: 'Nostalgia Hangat'
+    },
+    {
+      id: 'sng-2',
+      title: 'Dan...',
+      artist: 'Sheila on 7',
+      albumCover: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=300&q=80',
+      audioUrl: 'https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3?filename=chill-abstract-intention-12099.mp3',
+      tag: 'Kilas Balik Masa Sekolah'
+    },
+    {
+      id: 'sng-3',
+      title: 'Secukupnya (Lo-Fi Remix)',
+      artist: 'Hindia',
+      albumCover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=300&q=80',
+      audioUrl: 'https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3?filename=sweet-lofi-10492.mp3',
+      tag: 'Vibes PJJ Covid 2020'
+    }
+  ],
+  guestbook: [
+    {
+      id: 'gb-1',
+      name: 'Rian',
+      message: 'Gak kerasa man kita udah mau lulus kuliah aja! Tapi sumpah vibes SMK 2020-2023 pas Covid itu priceless banget.',
+      createdAt: '2026-08-06T20:00:00Z',
+      sticker: '🎓'
+    },
+    {
+      id: 'gb-2',
+      name: 'Bima',
+      message: 'Kangen mabar Among Us & ML sambil nge-mute zoom Pak Guru haha! Kapan kumpul circle lagi nih?',
+      createdAt: '2026-08-06T21:15:00Z',
+      sticker: '☕'
+    }
+  ]
+};
+
+// Initialize DB file if not exists
+if (!fs.existsSync(DB_PATH)) {
+  fs.writeFileSync(DB_PATH, JSON.stringify(initialData, null, 2), 'utf-8');
+}
+
+export const getDB = () => {
+  try {
+    const raw = fs.readFileSync(DB_PATH, 'utf-8');
+    return JSON.parse(raw);
+  } catch (e) {
+    return initialData;
+  }
+};
+
+export const saveDB = (data) => {
+  try {
+    fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2), 'utf-8');
+  } catch (e) {
+    console.warn('DB file is read-only (running on Vercel/Serverless):', e.message);
+  }
+};

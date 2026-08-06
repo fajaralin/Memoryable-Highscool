@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kenangan SMK &mdash; 2020/2023</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Literata:ital,opsz,wght@0,18..144,400;0,18..144,600;1,18..144,400&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cork:#8a6f4b;
+    --cork-dark:#725a3b;
+    --paper:#faf5e8;
+    --paper-shadow:#d8cdb4;
+    --ink:#2b2118;
+    --ink-soft:#5a4b3a;
+    --tape-blue:#7c97a3;
+    --tape-pink:#d98b93;
+    --tape-yellow:#e3b23c;
+    --accent:#b84a3e;
+    --pin:#c0392b;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--cork);
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(0,0,0,0.08) 0, transparent 40%),
+      radial-gradient(circle at 80% 30%, rgba(0,0,0,0.08) 0, transparent 40%),
+      radial-gradient(circle at 50% 80%, rgba(0,0,0,0.06) 0, transparent 45%),
+      repeating-linear-gradient(0deg, rgba(0,0,0,0.03) 0px, transparent 2px, transparent 4px),
+      repeating-linear-gradient(90deg, rgba(0,0,0,0.03) 0px, transparent 2px, transparent 4px);
+    color:var(--ink);
+    font-family:'Literata', serif;
+    line-height:1.6;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+
+  .eyebrow{
+    font-family:'Special Elite', monospace;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    font-size:.72rem;
+    color:var(--ink-soft);
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:92vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:6vh 5vw;
+    position:relative;
+  }
+  .polaroid-title{
+    background:var(--paper);
+    padding:2.4rem 2.6rem 3.2rem;
+    box-shadow:0 18px 40px rgba(0,0,0,.35);
+    transform:rotate(-2.5deg);
+    max-width:640px;
+    position:relative;
+    animation:settle 900ms ease-out both;
+  }
+  @keyframes settle{
+    from{opacity:0; transform:rotate(-2.5deg) translateY(-24px) scale(.97);}
+    to{opacity:1; transform:rotate(-2.5deg) translateY(0) scale(1);}
+  }
+  .tape{
+    position:absolute;
+    width:120px; height:34px;
+    opacity:.85;
+    box-shadow:0 2px 4px rgba(0,0,0,.2);
+  }
+  .tape.blue{background:var(--tape-blue);}
+  .tape.pink{background:var(--tape-pink);}
+  .tape.yellow{background:var(--tape-yellow);}
+  .polaroid-title .tape{ top:-18px; left:50%; transform:translateX(-50%) rotate(-4deg); }
+  .hero h1{
+    font-family:'Caveat', cursive;
+    font-weight:700;
+    font-size:clamp(2.6rem, 6vw, 4.2rem);
+    margin:.4rem 0 0;
+    color:var(--ink);
+  }
+  .hero .years{
+    font-family:'Special Elite', monospace;
+    font-size:1rem;
+    letter-spacing:.1em;
+    color:var(--accent);
+    margin-top:.4rem;
+  }
+  .hero p.sub{
+    font-family:'Literata', serif;
+    font-style:italic;
+    color:var(--ink-soft);
+    margin-top:1rem;
+    font-size:1.05rem;
+  }
+  .scroll-hint{
+    margin-top:3rem;
+    font-family:'Special Elite', monospace;
+    font-size:.75rem;
+    color:#f2e9d4;
+    opacity:.8;
+    animation:bob 2.4s ease-in-out infinite;
+  }
+  @keyframes bob{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(8px);} }
+
+  /* ---------- SECTIONS ---------- */
+  section{
+    max-width:920px;
+    margin:0 auto;
+    padding:5rem 6vw;
+  }
+  .year-block{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:2rem;
+    margin-bottom:5rem;
+  }
+  @media(min-width:760px){
+    .year-block{grid-template-columns: 260px 1fr; align-items:start;}
+    .year-block.reverse{grid-template-columns: 1fr 260px;}
+    .year-block.reverse .polaroid{order:2;}
+  }
+  .year-tag{
+    font-family:'Caveat', cursive;
+    font-weight:700;
+    font-size:3.4rem;
+    color:var(--paper);
+    line-height:1;
+    text-shadow:0 3px 0 rgba(0,0,0,.25);
+  }
+  .year-context{
+    font-family:'Special Elite', monospace;
+    font-size:.78rem;
+    color:#f2e9d4;
+    opacity:.85;
+    margin-top:.3rem;
+  }
+  .polaroid{
+    background:var(--paper);
+    padding:.8rem .8rem 2.6rem;
+    box-shadow:0 12px 26px rgba(0,0,0,.32);
+    position:relative;
+    transition:transform .25s ease;
+  }
+  .polaroid:hover{transform:scale(1.03) rotate(0deg) !important;}
+  .polaroid .frame{
+    aspect-ratio:1/1;
+    background:
+      repeating-linear-gradient(135deg, #cbb98f 0 10px, #c2af80 10px 20px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    color:#5a4a2f;
+    font-family:'Special Elite', monospace;
+    font-size:.72rem;
+    padding:.6rem;
+  }
+  .polaroid .caption{
+    font-family:'Caveat', cursive;
+    font-size:1.3rem;
+    text-align:center;
+    margin-top:.6rem;
+    color:var(--ink);
+  }
+  .polaroid .tape{ top:-16px; left:50%; transform:translateX(-50%) rotate(-3deg); width:90px; height:28px;}
+
+  .story-card{
+    background:var(--paper);
+    padding:1.8rem 2rem;
+    box-shadow:0 10px 22px rgba(0,0,0,.28);
+  }
+  .story-card h3{
+    font-family:'Caveat', cursive;
+    font-size:1.9rem;
+    margin:0 0 .6rem;
+    color:var(--accent);
+  }
+  .story-card p{
+    margin:.5rem 0;
+    color:var(--ink);
+    font-size:1rem;
+  }
+  .story-card p.edit-note{
+    font-family:'Special Elite', monospace;
+    font-size:.7rem;
+    color:#9a8a6d;
+    border-top:1px dashed #d8cdb4;
+    margin-top:1rem;
+    padding-top:.6rem;
+  }
+
+  /* ---------- QUOTE STICKY ---------- */
+  .sticky-wrap{
+    display:flex;
+    justify-content:center;
+    margin:2rem 0 5rem;
+  }
+  .sticky{
+    background:var(--tape-yellow);
+    color:#3a2e12;
+    padding:2rem 2.4rem;
+    max-width:520px;
+    text-align:center;
+    box-shadow:0 10px 20px rgba(0,0,0,.3);
+    transform:rotate(1.5deg);
+    font-family:'Caveat', cursive;
+    font-size:1.6rem;
+    font-weight:700;
+  }
+
+  /* ---------- GALLERY ---------- */
+  .gallery-title{
+    text-align:center;
+    color:var(--paper);
+    margin-bottom:2.5rem;
+  }
+  .gallery-title h2{
+    font-family:'Caveat', cursive;
+    font-size:2.6rem;
+    margin:.3rem 0 0;
+  }
+  .gallery{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(160px, 1fr));
+    gap:1.8rem 1.4rem;
+    padding-bottom:1rem;
+  }
+  .gallery .polaroid{ width:100%; }
+  .gallery .polaroid:nth-child(odd){ transform:rotate(-3deg); }
+  .gallery .polaroid:nth-child(even){ transform:rotate(2.5deg); }
+  .gallery .polaroid:nth-child(3n){ transform:rotate(-1.5deg); }
+
+  /* ---------- CLOSING QUOTE ---------- */
+  .closing{
+    text-align:center;
+    padding:6rem 6vw;
+  }
+  .closing .polaroid-title{ margin:0 auto; transform:rotate(1.8deg); }
+  .closing .polaroid-title h2{
+    font-family:'Caveat', cursive;
+    font-size:clamp(1.8rem,4vw,2.6rem);
+    margin:0;
+  }
+
+  /* ---------- GUESTBOOK ---------- */
+  .guestbook{
+    background:var(--cork-dark);
+    padding:5rem 6vw 6rem;
+  }
+  .guestbook-inner{ max-width:920px; margin:0 auto; }
+  .guestbook h2{
+    font-family:'Caveat', cursive;
+    color:var(--paper);
+    font-size:2.6rem;
+    text-align:center;
+    margin-bottom:.3rem;
+  }
+  .guestbook .eyebrow{ text-align:center; display:block; color:#e7dcc0; }
+  .gb-form{
+    max-width:480px;
+    margin:2.4rem auto 3rem;
+    background:var(--paper);
+    padding:1.6rem;
+    box-shadow:0 10px 24px rgba(0,0,0,.3);
+  }
+  .gb-form label{
+    display:block;
+    font-family:'Special Elite', monospace;
+    font-size:.7rem;
+    color:var(--ink-soft);
+    margin-bottom:.3rem;
+  }
+  .gb-form input, .gb-form textarea{
+    width:100%;
+    font-family:'Literata', serif;
+    font-size:.95rem;
+    border:1px solid var(--paper-shadow);
+    background:#fffdf7;
+    padding:.6rem .7rem;
+    margin-bottom:1rem;
+    resize:vertical;
+    color:var(--ink);
+  }
+  .gb-form button{
+    font-family:'Special Elite', monospace;
+    background:var(--accent);
+    color:var(--paper);
+    border:none;
+    padding:.7rem 1.4rem;
+    cursor:pointer;
+    letter-spacing:.05em;
+    transition:background .2s;
+  }
+  .gb-form button:hover{ background:#96382e; }
+  .gb-form button:focus-visible, .gb-form input:focus-visible, .gb-form textarea:focus-visible{
+    outline:2px solid var(--tape-yellow);
+    outline-offset:2px;
+  }
+  .gb-status{
+    font-family:'Special Elite', monospace;
+    font-size:.72rem;
+    text-align:center;
+    color:#e7dcc0;
+    min-height:1.2em;
+    margin-top:-1.6rem;
+    margin-bottom:2rem;
+  }
+  .gb-wall{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(200px, 1fr));
+    gap:1.4rem;
+  }
+  .gb-note{
+    background:var(--tape-pink);
+    color:#3a1414;
+    padding:1.2rem 1.3rem;
+    font-family:'Caveat', cursive;
+    font-size:1.25rem;
+    box-shadow:0 8px 16px rgba(0,0,0,.28);
+  }
+  .gb-note:nth-child(3n){ background:var(--tape-blue); color:#132227; }
+  .gb-note:nth-child(3n+2){ background:var(--tape-yellow); color:#3a2e12; }
+  .gb-note .who{
+    display:block;
+    font-family:'Special Elite', monospace;
+    font-size:.68rem;
+    margin-top:.6rem;
+    opacity:.75;
+  }
+  .gb-empty{
+    font-family:'Special Elite', monospace;
+    font-size:.78rem;
+    color:#e7dcc0;
+    text-align:center;
+    grid-column:1/-1;
+  }
+
+  footer{
+    text-align:center;
+    padding:3rem 5vw;
+    font-family:'Special Elite', monospace;
+    font-size:.7rem;
+    color:#e7dcc0;
+    background:var(--cork-dark);
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="polaroid-title">
+    <div class="tape blue"></div>
+    <span class="eyebrow">Arsip Pribadi &middot; Jangan Dihapus</span>
+    <h1>Kenangan Masa SMK</h1>
+    <div class="years">2020 &mdash; 2023</div>
+    <p class="sub">"Ganti judul &amp; nama sekolahmu di sini, lalu tulis satu kalimat yang paling menggambarkan masa itu."</p>
+  </div>
+  <div class="scroll-hint">&darr; scroll buat buka lembaran kenangan &darr;</div>
+</section>
+
+<!-- ============ 2020 ============ -->
+<section>
+  <div class="year-block">
+    <div>
+      <div class="year-tag">2020</div>
+      <div class="year-context">Awal masuk SMK &middot; PSBB &amp; sekolah dari rumah dimulai</div>
+      <div class="polaroid" style="margin-top:1.4rem; transform:rotate(-3deg);">
+        <div class="tape pink"></div>
+        <div class="frame">taruh foto MPLS / awal masuk di sini</div>
+        <div class="caption">hari pertama, semuanya masih asing</div>
+      </div>
+    </div>
+    <div class="story-card">
+      <h3>Awal yang Aneh</h3>
+      <p>Baru juga kenal seragam dan gedung sekolah, eh langsung disuruh belajar dari kamar masing-masing. Kelas jadi kotak-kotak kecil di layar HP, dan nama-nama teman sekelas cuma jadi tulisan di grup WhatsApp.</p>
+      <p>Ganti paragraf ini dengan cerita aslimu: gimana rasanya jadi anak baru SMK yang gak sempat kenalan langsung sama teman sekelas?</p>
+      <p class="edit-note">Edit teks ini &mdash; cari komentar "story-card" di kode buat ganti tiap paragraf.</p>
+    </div>
+  </div>
+
+  <!-- ============ 2021 ============ -->
+  <div class="year-block reverse">
+    <div class="story-card">
+      <h3>Zona PJJ Total</h3>
+      <p>Ini titik paling berat sekaligus paling lucu buat dikenang: kamera dimatiin biar irit kuota, tugas numpuk lewat Google Classroom, dan grup kelas rame tiap kali guru telat masuk Zoom.</p>
+      <p>Tulis di sini momen spesifik tahun 2021 versimu &mdash; obrolan lucu di grup kelas, lagu yang sering diputer pas belajar, atau hal random yang bikin PJJ terasa gak sendirian.</p>
+      <p class="edit-note">Tambahkan sebanyak yang kamu mau &mdash; salin tag &lt;p&gt; ini kalau perlu.</p>
+    </div>
+    <div>
+      <div class="year-tag">2021</div>
+      <div class="year-context">Puncak pandemi &middot; sekolah daring penuh</div>
+      <div class="polaroid" style="margin-top:1.4rem; transform:rotate(3deg);">
+        <div class="tape yellow"></div>
+        <div class="frame">screenshot kelas Zoom / grup kelas</div>
+        <div class="caption">"pak, suaranya putus-putus"</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sticky-wrap">
+    <div class="sticky">"Layar 6 inci itu jadi satu-satunya jendela ke dunia sekolah selama berbulan-bulan."</div>
+  </div>
+
+  <!-- ============ 2022 ============ -->
+  <div class="year-block">
+    <div>
+      <div class="year-tag">2022</div>
+      <div class="year-context">Mulai PTM terbatas &middot; akhirnya ketemu langsung</div>
+      <div class="polaroid" style="margin-top:1.4rem; transform:rotate(-2deg);">
+        <div class="tape blue"></div>
+        <div class="frame">foto pertama kali PTM / pakai masker di kelas</div>
+        <div class="caption">akhirnya lihat wajah asli teman sekelas</div>
+      </div>
+    </div>
+    <div class="story-card">
+      <h3>Ketemu Beneran</h3>
+      <p>Rasanya kayak jadi anak baru lagi &mdash; tapi kali ini beneran duduk sebangku, jajan di kantin, dan ketawa bareng tanpa layar di tengah-tengah. Masker masih dipakai, tapi jarak yang selama ini terasa mulai hilang.</p>
+      <p>Ganti dengan cerita PTM pertamamu: siapa yang pertama kali kamu kenali suaranya beda dari yang di Zoom?</p>
+      <p class="edit-note">Bagian ini paling cocok diisi cerita reuni pertama kelas.</p>
+    </div>
+  </div>
+
+  <!-- ============ 2023 ============ -->
+  <div class="year-block reverse">
+    <div class="story-card">
+      <h3>Menuju Kelulusan</h3>
+      <p>Setelah tiga tahun yang serba tidak biasa, giliran perpisahan yang datang. PKL, ujian, sampai wisuda &mdash; semuanya terasa cepat padahal baru saja rasanya mulai benar-benar kenal satu sama lain.</p>
+      <p>Tulis momen kelulusanmu di sini: siapa yang paling nangis, janji apa yang dibuat, atau apa yang paling kamu kangenin sekarang.</p>
+      <p class="edit-note">Bagian penutup cerita &mdash; boleh dibuat paling personal.</p>
+    </div>
+    <div>
+      <div class="year-tag">2023</div>
+      <div class="year-context">Kelulusan &middot; dunia mulai normal lagi</div>
+      <div class="polaroid" style="margin-top:1.4rem; transform:rotate(2.5deg);">
+        <div class="tape pink"></div>
+        <div class="frame">foto wisuda / perpisahan</div>
+        <div class="caption">sampai jumpa, tapi gak lupa</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GALLERY ============ -->
+<section>
+  <div class="gallery-title">
+    <span class="eyebrow" style="color:#e7dcc0;">Album Tambahan</span>
+    <h2>Potongan Momen Lainnya</h2>
+  </div>
+  <div class="gallery">
+    <div class="polaroid"><div class="frame">foto 1</div><div class="caption">isi caption</div></div>
+    <div class="polaroid"><div class="frame">foto 2</div><div class="caption">isi caption</div></div>
+    <div class="polaroid"><div class="frame">foto 3</div><div class="caption">isi caption</div></div>
+    <div class="polaroid"><div class="frame">foto 4</div><div class="caption">isi caption</div></div>
+    <div class="polaroid"><div class="frame">foto 5</div><div class="caption">isi caption</div></div>
+    <div class="polaroid"><div class="frame">foto 6</div><div class="caption">isi caption</div></div>
+  </div>
+</section>
+
+<!-- ============ CLOSING ============ -->
+<section class="closing">
+  <div class="polaroid-title">
+    <div class="tape yellow"></div>
+    <h2>"Sampai mau lulus kuliah pun, vibes SMK 2020&ndash;2023 tetap yang paling ngena di hati."</h2>
+  </div>
+</section>
+
+<!-- ============ GUESTBOOK ============ -->
+<section class="guestbook" id="guestbook">
+  <div class="guestbook-inner">
+    <span class="eyebrow">Buat Teman Seangkatan</span>
+    <h2>Tinggalin Kenangan Kamu Juga</h2>
+
+    <form class="gb-form" id="gbForm">
+      <label for="gbName">Nama kamu</label>
+      <input type="text" id="gbName" maxlength="40" required placeholder="mis. Dinda">
+      <label for="gbMsg">Kenangan / pesan singkat</label>
+      <textarea id="gbMsg" rows="3" maxlength="220" required placeholder="tulis satu kenangan yang paling kamu inget..."></textarea>
+      <button type="submit">Tempel di dinding kenangan</button>
+    </form>
+    <div class="gb-status" id="gbStatus" aria-live="polite"></div>
+
+    <div class="gb-wall" id="gbWall">
+      <div class="gb-empty" id="gbEmpty">Memuat kenangan...</div>
+    </div>
+  </div>
+</section>
+
+<footer>dibuat dengan kangen &middot; kenangan SMK 2020&ndash;2023</footer>
+
+<script>
+(function(){
+  const form = document.getElementById('gbForm');
+  const status = document.getElementById('gbStatus');
+  const wall = document.getElementById('gbWall');
+  const emptyMsg = document.getElementById('gbEmpty');
+  const WALL_KEY = 'gb-notes';
+
+  function escapeHtml(str){
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function renderNotes(notes){
+    wall.innerHTML = '';
+    if(!notes.length){
+      wall.appendChild(emptyMsg);
+      return;
+    }
+    notes.slice().reverse().forEach(n => {
+      const el = document.createElement('div');
+      el.className = 'gb-note';
+      el.innerHTML = `${escapeHtml(n.message)}<span class="who">&mdash; ${escapeHtml(n.name)}</span>`;
+      wall.appendChild(el);
+    });
+  }
+
+  async function loadNotes(){
+    try{
+      const res = await window.storage.get(WALL_KEY, true);
+      const notes = res && res.value ? JSON.parse(res.value) : [];
+      renderNotes(notes);
+    }catch(e){
+      renderNotes([]);
+    }
+  }
+
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    const name = document.getElementById('gbName').value.trim();
+    const message = document.getElementById('gbMsg').value.trim();
+    if(!name || !message) return;
+
+    status.textContent = 'Menempel...';
+    try{
+      let notes = [];
+      try{
+        const res = await window.storage.get(WALL_KEY, true);
+        notes = res && res.value ? JSON.parse(res.value) : [];
+      }catch(e){ notes = []; }
+
+      notes.push({ name, message, ts: Date.now() });
+      const result = await window.storage.set(WALL_KEY, JSON.stringify(notes), true);
+      if(result){
+        status.textContent = 'Tersimpan! Semua yang buka halaman ini bisa lihat pesanmu.';
+        form.reset();
+        renderNotes(notes);
+      } else {
+        status.textContent = 'Gagal menyimpan, coba lagi ya.';
+      }
+    }catch(err){
+      status.textContent = 'Gagal menyimpan, coba lagi ya.';
+    }
+  });
+
+  loadNotes();
+})();
+</script>
+
+</body>
+</html>
