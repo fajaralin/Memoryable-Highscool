@@ -137,7 +137,7 @@ export default function TimelineSection({ timeline = [], memories = [], onAddMem
       <div className="decor-polaroid" style={{ transform: `rotate(${item.decor.rotation}deg)` }}>
         <div className="tape-strip top-tape"></div>
         <div className="polaroid-photo-frame">
-          <img src={item.decor.image} alt={item.decor.caption} />
+          <img src={item.decor.image} alt={item.decor.caption} loading="lazy" decoding="async" />
           <span className="decor-badge">{item.decor.badge}</span>
         </div>
         <div className="decor-caption">

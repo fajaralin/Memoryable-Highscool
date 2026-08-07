@@ -12,7 +12,7 @@ export default function ClassPhotoSection() {
       }
     }
     return {
-      imageUrl: '/class_photo.png',
+      imageUrl: '/class_photo.webp',
       className: 'XII RPL 1 — SMK Angkatan 2020–2023',
       teacherName: 'Drs. H. Mulyadi, M.Pd',
       teacherRole: 'Guru Wali Kelas Utama',
@@ -220,6 +220,8 @@ export default function ClassPhotoSection() {
               <img
                 src={photoData.imageUrl}
                 alt="Foto Satu Kelas dan Wali Kelas"
+                loading="eager"
+                decoding="async"
                 style={{
                   width: '100%',
                   maxHeight: '620px',

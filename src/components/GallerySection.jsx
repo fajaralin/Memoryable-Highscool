@@ -56,7 +56,7 @@ export default function GallerySection({ memories = [], onAddMemory }) {
             onClick={() => handleOpenMemory(item)}
           >
             <div className="g-frame">
-              <img src={item.imageUrl} alt={item.title} />
+              <img src={item.imageUrl} alt={item.title} loading="lazy" decoding="async" />
             </div>
             <div className="g-cap font-caveat">{item.title}</div>
             <div style={{
