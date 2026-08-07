@@ -1,7 +1,7 @@
 import React from 'react';
-import { Calendar, Image as ImageIcon, Users, MessageSquare, ShieldCheck, CloudRain, Music } from 'lucide-react';
+import { Calendar, Image as ImageIcon, Users, MessageSquare, CloudRain, Music } from 'lucide-react';
 
-export default function Navbar({ activeTab, setActiveTab, onOpenAdmin, isRainPlaying, toggleRain }) {
+export default function Navbar({ activeTab, setActiveTab, isRainPlaying, toggleRain }) {
   const navItems = [
     { id: 'timeline', label: 'Linimasa', icon: Calendar, href: '#linimasa' },
     { id: 'gallery', label: 'Galeri', icon: ImageIcon, href: '#galeri' },
@@ -91,31 +91,8 @@ export default function Navbar({ activeTab, setActiveTab, onOpenAdmin, isRainPla
           <CloudRain style={{ width: '14px', height: '14px' }} />
           <span>{isRainPlaying ? 'Rain ON' : 'Rain Sound'}</span>
         </button>
-
-        {/* Admin Panel Button */}
-        <button
-          onClick={onOpenAdmin}
-          style={{
-            background: 'var(--maroon)',
-            color: 'var(--polaroid)',
-            border: 'none',
-            padding: '7px 16px',
-            borderRadius: '4px',
-            fontFamily: "'Special Elite', monospace",
-            fontSize: '0.7rem',
-            letterSpacing: '0.06em',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            textTransform: 'uppercase',
-            fontWeight: 'bold'
-          }}
-        >
-          <ShieldCheck style={{ width: '14px', height: '14px' }} />
-          <span>Admin</span>
-        </button>
       </div>
     </nav>
   );
 }
+

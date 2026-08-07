@@ -47,6 +47,23 @@ export default function App() {
 
   useEffect(() => {
     fetchData();
+
+    // Listener for manual /admin route or #admin hash
+    const handleCheckAdminRoute = () => {
+      const path = window.location.pathname.toLowerCase();
+      const hash = window.location.hash.toLowerCase();
+      if (path.endsWith('/admin') || path.includes('/admin') || hash === '#admin') {
+        setIsAdminOpen(true);
+      }
+    };
+
+    handleCheckAdminRoute();
+    window.addEventListener('popstate', handleCheckAdminRoute);
+    window.addEventListener('hashchange', handleCheckAdminRoute);
+    return () => {
+      window.removeEventListener('popstate', handleCheckAdminRoute);
+      window.removeEventListener('hashchange', handleCheckAdminRoute);
+    };
   }, []);
 
   // Web Audio Rain Sound Synthesizer
@@ -148,7 +165,6 @@ export default function App() {
       <Navbar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
-        onOpenAdmin={() => setIsAdminOpen(true)}
         isRainPlaying={isRainPlaying}
         toggleRain={toggleRain}
       />
