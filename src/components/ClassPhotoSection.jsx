@@ -287,11 +287,8 @@ export default function ClassPhotoSection({ initialClassPhoto, onUpdateClassPhot
                 borderRadius: '2px',
                 overflow: 'hidden',
                 boxShadow: '0 4px 16px rgba(0,0,0,0.25)',
-                border: '2px solid #e0c38c',
-                cursor: 'pointer'
+                border: '2px solid #e0c38c'
               }}
-              onClick={() => setIsLightboxOpen(true)}
-              title="Klik untuk memperbesar foto kelas"
             >
               <img
                 src={photoData.imageUrl}
@@ -303,34 +300,9 @@ export default function ClassPhotoSection({ initialClassPhoto, onUpdateClassPhot
                   maxHeight: '600px',
                   objectFit: 'cover',
                   display: 'block',
-                  transition: 'transform 0.4s ease',
                   filter: 'contrast(1.03) saturate(1.05)'
                 }}
-                onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
-                onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
               />
-
-              {/* Hover Overlay Hint */}
-              <div
-                className="font-special"
-                style={{
-                  position: 'absolute',
-                  bottom: '10px',
-                  right: '10px',
-                  background: 'rgba(35,48,74,0.88)',
-                  color: '#fff',
-                  padding: '6px 12px',
-                  borderRadius: '16px',
-                  fontSize: '0.7rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  backdropFilter: 'blur(4px)',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
-                }}
-              >
-                <span>🔍</span> Perbesar (Fullscreen)
-              </div>
             </div>
 
             {/* Engraved Brass Plaque Plate at bottom of matboard */}
@@ -465,126 +437,9 @@ export default function ClassPhotoSection({ initialClassPhoto, onUpdateClassPhot
                 </span>
               </div>
             </div>
-
-            <div style={{ display: 'flex', gap: '10px', marginTop: '14px' }}>
-              <button
-                className="font-special"
-                onClick={() => setIsLightboxOpen(true)}
-                style={{
-                  flex: 1,
-                  minHeight: '42px',
-                  padding: '8px 14px',
-                  background: 'var(--ink)',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: '6px',
-                  fontSize: '0.8rem',
-                  fontWeight: 'bold',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '6px',
-                  boxShadow: '0 4px 10px rgba(35,48,74,0.3)'
-                }}
-              >
-                🔍 Perbesar Foto (Layar Penuh)
-              </button>
-            </div>
           </div>
         </div>
       </div>
-
-      {/* Lightbox / Zoom View Modal */}
-      {isLightboxOpen && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            zIndex: 99999,
-            background: 'rgba(15, 20, 30, 0.94)',
-            backdropFilter: 'blur(8px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '16px'
-          }}
-          onClick={() => setIsLightboxOpen(false)}
-        >
-          <div
-            style={{
-              position: 'relative',
-              maxWidth: '96vw',
-              maxHeight: '94vh',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center'
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Close Button */}
-            <button
-              onClick={() => setIsLightboxOpen(false)}
-              style={{
-                position: 'absolute',
-                top: '-42px',
-                right: '0',
-                background: 'rgba(255,255,255,0.25)',
-                color: '#fff',
-                border: 'none',
-                width: '36px',
-                height: '36px',
-                borderRadius: '50%',
-                fontSize: '1.2rem',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              ✕
-            </button>
-
-            {/* Lightbox Image with Frame */}
-            <div
-              style={{
-                border: '8px solid #3d2314',
-                borderRadius: '8px',
-                boxShadow: '0 25px 60px rgba(0,0,0,0.8)',
-                background: '#fff',
-                padding: '8px',
-                maxHeight: '82vh',
-                overflow: 'hidden'
-              }}
-            >
-              <img
-                src={photoData.imageUrl}
-                alt="Foto Satu Kelas dan Wali Kelas"
-                style={{
-                  maxWidth: '100%',
-                  maxHeight: '75vh',
-                  objectFit: 'contain',
-                  borderRadius: '2px',
-                  display: 'block'
-                }}
-              />
-            </div>
-
-            <div 
-              className="font-special"
-              style={{
-                color: '#fff',
-                marginTop: '12px',
-                textAlign: 'center',
-                fontSize: '0.82rem',
-                opacity: 0.9
-              }}
-            >
-              📸 {photoData.className} — Wali Kelas: {photoData.teacherName}
-            </div>
-          </div>
-        </div>
-      )}
     </section>
   );
 }

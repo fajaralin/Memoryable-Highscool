@@ -1,7 +1,7 @@
 import React from 'react';
 import { Calendar, Image as ImageIcon, Users, MessageSquare, CloudRain, Music } from 'lucide-react';
 
-export default function Navbar({ activeTab, setActiveTab, isRainPlaying, toggleRain }) {
+export default function Navbar({ activeTab, setActiveTab, isBgMusicPlaying, toggleBgMusic }) {
   const navItems = [
     { id: 'foto-kelas', label: 'Foto Kelas', icon: ImageIcon, href: '#foto-kelas' },
     { id: 'timeline', label: 'Linimasa', icon: Calendar, href: '#linimasa' },
@@ -69,16 +69,16 @@ export default function Navbar({ activeTab, setActiveTab, isRainPlaying, toggleR
 
       {/* Right Controls */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-        {/* Rain Sound Toggle */}
+        {/* Background Music Toggle (.Feast - Nina) */}
         <button
-          onClick={toggleRain}
-          title={isRainPlaying ? 'Matikan Suara Hujan' : 'Nyalakan Suara Hujan'}
+          onClick={toggleBgMusic}
+          title={isBgMusicPlaying ? 'Matikan Musik Nina - .Feast' : 'Putar Musik Nina - .Feast'}
           style={{
-            background: isRainPlaying ? 'var(--teal)' : 'transparent',
-            color: isRainPlaying ? '#fff' : 'var(--ink-soft)',
-            border: '1px dashed var(--teal)',
+            background: isBgMusicPlaying ? 'var(--maroon)' : 'transparent',
+            color: isBgMusicPlaying ? '#fff' : 'var(--ink-soft)',
+            border: '1px dashed var(--maroon)',
             padding: '6px 14px',
-            borderRadius: '4px',
+            borderRadius: '20px',
             fontFamily: "'Special Elite', monospace",
             fontSize: '0.7rem',
             letterSpacing: '0.06em',
@@ -86,11 +86,13 @@ export default function Navbar({ activeTab, setActiveTab, isRainPlaying, toggleR
             display: 'flex',
             alignItems: 'center',
             gap: '6px',
-            textTransform: 'uppercase'
+            textTransform: 'uppercase',
+            boxShadow: isBgMusicPlaying ? '0 4px 10px rgba(122,46,53,0.3)' : 'none',
+            transition: 'all 0.3s ease'
           }}
         >
-          <CloudRain style={{ width: '14px', height: '14px' }} />
-          <span>{isRainPlaying ? 'Rain ON' : 'Rain Sound'}</span>
+          <Music style={{ width: '14px', height: '14px', animation: isBgMusicPlaying ? 'spin 4s linear infinite' : 'none' }} />
+          <span>{isBgMusicPlaying ? '🎵 Nina - .Feast (ON)' : '🎵 Nina - .Feast (OFF)'}</span>
         </button>
       </div>
     </nav>
