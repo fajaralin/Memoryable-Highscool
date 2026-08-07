@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react';
 export default function ClassPhotoSection({ initialClassPhoto, onUpdateClassPhoto }) {
   const defaultPhotoState = {
     imageUrl: '/class_photo.webp',
-    className: 'XII RPL 1 — SMK Angkatan 2020–2023',
-    teacherName: 'Drs. H. Mulyadi, M.Pd',
+    className: 'XII RPL 3 — SMK Angkatan 2020–2023',
+    teacherName: 'Siti Mariatul Kiptiyah Spd. M.Pd',
     teacherRole: 'Guru Wali Kelas Utama',
     quote: '“Sukses selalu untuk kalian semua. Meskipun masa SMK diwarnai PJJ dan pandemi, kalian terbukti tangguh, kreatif, dan luar biasa!”',
     totalStudents: '36 Siswa'

@@ -73,8 +73,8 @@ app.get('/api/class-photo', (req, res) => {
   const db = getDB();
   const defaultPhoto = {
     imageUrl: '/class_photo.webp',
-    className: 'XII RPL 1 — SMK Angkatan 2020–2023',
-    teacherName: 'Drs. H. Mulyadi, M.Pd',
+    className: 'XII RPL 3 — SMK Angkatan 2020–2023',
+    teacherName: 'Siti Mariatul Kiptiyah Spd. M.Pd',
     teacherRole: 'Guru Wali Kelas Utama',
     quote: '“Sukses selalu untuk kalian semua. Meskipun masa SMK diwarnai PJJ dan pandemi, kalian terbukti tangguh, kreatif, dan luar biasa!”',
     totalStudents: '36 Siswa'
@@ -93,8 +93,8 @@ app.post('/api/class-photo', upload.single('image'), (req, res) => {
 
   const updatedClassPhoto = {
     imageUrl,
-    className: req.body.className || currentPhoto.className || 'XII RPL 1 — SMK Angkatan 2020–2023',
-    teacherName: req.body.teacherName || currentPhoto.teacherName || 'Drs. H. Mulyadi, M.Pd',
+    className: req.body.className || currentPhoto.className || 'XII RPL 3 — SMK Angkatan 2020–2023',
+    teacherName: req.body.teacherName || currentPhoto.teacherName || 'Siti Mariatul Kiptiyah Spd. M.Pd',
     teacherRole: req.body.teacherRole || currentPhoto.teacherRole || 'Guru Wali Kelas Utama',
     quote: req.body.quote !== undefined ? req.body.quote : (currentPhoto.quote || ''),
     totalStudents: req.body.totalStudents || currentPhoto.totalStudents || '36 Siswa'
