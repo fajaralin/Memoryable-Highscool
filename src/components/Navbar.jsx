@@ -3,6 +3,7 @@ import { Calendar, Image as ImageIcon, Users, MessageSquare, CloudRain, Music } 
 
 export default function Navbar({ activeTab, setActiveTab, isRainPlaying, toggleRain }) {
   const navItems = [
+    { id: 'foto-kelas', label: 'Foto Kelas', icon: ImageIcon, href: '#foto-kelas' },
     { id: 'timeline', label: 'Linimasa', icon: Calendar, href: '#linimasa' },
     { id: 'gallery', label: 'Galeri', icon: ImageIcon, href: '#galeri' },
     { id: 'playlist', label: 'Playlist', icon: Music, href: '#playlist' },

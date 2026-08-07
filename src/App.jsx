@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
+import ClassPhotoSection from './components/ClassPhotoSection';
 import TimelineSection from './components/TimelineSection';
 import GallerySection from './components/GallerySection';
 import MusicPlayer from './components/MusicPlayer';
@@ -173,10 +174,13 @@ export default function App() {
       <main>
         <HeroSection
           onExplore={() => {
-            const el = document.getElementById('linimasa');
+            const el = document.getElementById('foto-kelas') || document.getElementById('linimasa');
             if (el) el.scrollIntoView({ behavior: 'smooth' });
           }}
         />
+
+        {/* Foto Kelas Bersama Guru Wali */}
+        <ClassPhotoSection />
 
         <TimelineSection
           timeline={timeline}
