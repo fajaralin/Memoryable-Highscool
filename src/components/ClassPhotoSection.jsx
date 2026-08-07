@@ -466,52 +466,29 @@ export default function ClassPhotoSection({ initialClassPhoto, onUpdateClassPhot
               </div>
             </div>
 
-            <div style={{ display: 'flex', gap: '10px', marginTop: '14px', flexWrap: 'wrap' }}>
-              <button
-                className="font-special"
-                onClick={() => setIsEditOpen(true)}
-                style={{
-                  flex: 1,
-                  minHeight: '42px',
-                  padding: '8px 14px',
-                  background: 'var(--teal)',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: '6px',
-                  fontSize: '0.78rem',
-                  fontWeight: 'bold',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '6px',
-                  boxShadow: '0 4px 10px rgba(63,111,100,0.3)',
-                  transition: 'all 0.2s ease'
-                }}
-              >
-                ✏️ Ganti / Edit Foto Online
-              </button>
-
+            <div style={{ display: 'flex', gap: '10px', marginTop: '14px' }}>
               <button
                 className="font-special"
                 onClick={() => setIsLightboxOpen(true)}
                 style={{
+                  flex: 1,
                   minHeight: '42px',
                   padding: '8px 14px',
                   background: 'var(--ink)',
                   color: '#fff',
                   border: 'none',
                   borderRadius: '6px',
-                  fontSize: '0.78rem',
+                  fontSize: '0.8rem',
                   fontWeight: 'bold',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
+                  justifyContent: 'center',
                   gap: '6px',
                   boxShadow: '0 4px 10px rgba(35,48,74,0.3)'
                 }}
               >
-                🔍 Perbesar
+                🔍 Perbesar Foto (Layar Penuh)
               </button>
             </div>
           </div>
@@ -605,187 +582,6 @@ export default function ClassPhotoSection({ initialClassPhoto, onUpdateClassPhot
             >
               📸 {photoData.className} — Wali Kelas: {photoData.teacherName}
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* Edit Photo & Info Modal */}
-      {isEditOpen && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            zIndex: 99999,
-            background: 'rgba(0,0,0,0.75)',
-            backdropFilter: 'blur(4px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '16px',
-            overflowY: 'auto'
-          }}
-          onClick={() => setIsEditOpen(false)}
-        >
-          <div
-            style={{
-              background: 'var(--paper)',
-              maxWidth: '520px',
-              width: '100%',
-              borderRadius: '12px',
-              padding: '22px',
-              boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
-              border: '2px solid var(--cork)',
-              position: 'relative',
-              maxHeight: '90vh',
-              overflowY: 'auto'
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-              <h3 style={{ fontSize: '1.2rem', color: 'var(--ink)', margin: 0 }}>
-                ✏️ Edit / Ganti Foto Kelas Online
-              </h3>
-              <button
-                onClick={() => setIsEditOpen(false)}
-                style={{ background: 'none', border: 'none', fontSize: '1.2rem', cursor: 'pointer' }}
-              >
-                ✕
-              </button>
-            </div>
-
-            <form onSubmit={handleSaveEdit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-              <div>
-                <label className="label" style={{ display: 'block', marginBottom: '4px', fontSize: '0.7rem' }}>
-                  Upload Foto Baru (dari Galeri HP / Komputer):
-                </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileUpload}
-                  style={{
-                    width: '100%',
-                    padding: '8px',
-                    background: 'var(--polaroid)',
-                    border: '1px solid var(--cork)',
-                    borderRadius: '6px',
-                    fontSize: '0.82rem'
-                  }}
-                />
-              </div>
-
-              <div>
-                <label className="label" style={{ display: 'block', marginBottom: '4px', fontSize: '0.7rem' }}>
-                  Atau Input URL Foto Kelas (Online):
-                </label>
-                <input
-                  type="text"
-                  value={editImageUrl}
-                  onChange={(e) => setEditImageUrl(e.target.value)}
-                  placeholder="https://... atau /class_photo.webp"
-                  style={{
-                    width: '100%',
-                    padding: '10px',
-                    background: 'var(--polaroid)',
-                    border: '1px solid var(--cork)',
-                    borderRadius: '6px',
-                    fontSize: '0.85rem'
-                  }}
-                />
-              </div>
-
-              <div>
-                <label className="label" style={{ display: 'block', marginBottom: '4px', fontSize: '0.7rem' }}>
-                  Nama Kelas & Angkatan:
-                </label>
-                <input
-                  type="text"
-                  value={editClassName}
-                  onChange={(e) => setEditClassName(e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '10px',
-                    background: 'var(--polaroid)',
-                    border: '1px solid var(--cork)',
-                    borderRadius: '6px',
-                    fontSize: '0.85rem'
-                  }}
-                />
-              </div>
-
-              <div>
-                <label className="label" style={{ display: 'block', marginBottom: '4px', fontSize: '0.7rem' }}>
-                  Nama Wali Kelas:
-                </label>
-                <input
-                  type="text"
-                  value={editTeacherName}
-                  onChange={(e) => setEditTeacherName(e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '10px',
-                    background: 'var(--polaroid)',
-                    border: '1px solid var(--cork)',
-                    borderRadius: '6px',
-                    fontSize: '0.85rem'
-                  }}
-                />
-              </div>
-
-              <div>
-                <label className="label" style={{ display: 'block', marginBottom: '4px', fontSize: '0.7rem' }}>
-                  Pesan / Kesan Guru Wali:
-                </label>
-                <textarea
-                  rows="3"
-                  value={editQuote}
-                  onChange={(e) => setEditQuote(e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '10px',
-                    background: 'var(--polaroid)',
-                    border: '1px solid var(--cork)',
-                    borderRadius: '6px',
-                    fontSize: '0.85rem'
-                  }}
-                />
-              </div>
-
-              <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-                <button
-                  type="button"
-                  onClick={() => setIsEditOpen(false)}
-                  style={{
-                    flex: 1,
-                    minHeight: '44px',
-                    padding: '10px',
-                    background: 'transparent',
-                    border: '1px solid var(--ink-soft)',
-                    borderRadius: '6px',
-                    cursor: 'pointer'
-                  }}
-                >
-                  Batal
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSaving}
-                  style={{
-                    flex: 1,
-                    minHeight: '44px',
-                    padding: '10px',
-                    background: 'var(--maroon)',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: '6px',
-                    fontWeight: 'bold',
-                    cursor: 'pointer',
-                    opacity: isSaving ? 0.7 : 1
-                  }}
-                >
-                  {isSaving ? 'Menyimpan...' : 'Simpan ke Database'}
-                </button>
-              </div>
-            </form>
           </div>
         </div>
       )}
