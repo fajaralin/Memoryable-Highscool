@@ -158,6 +158,28 @@ app.post('/api/memories', upload.single('image'), (req, res) => {
   res.json({ success: true, memory: newMemory });
 });
 
+app.put('/api/memories/:id', upload.single('image'), (req, res) => {
+  const db = getDB();
+  const index = db.memories.findIndex(m => m.id === req.params.id);
+  if (index !== -1) {
+    let imageUrl = req.body.imageUrl || db.memories[index].imageUrl;
+    if (req.file) {
+      imageUrl = `/uploads/${req.file.filename}`;
+    }
+    db.memories[index] = {
+      ...db.memories[index],
+      title: req.body.title || db.memories[index].title,
+      category: req.body.category || db.memories[index].category,
+      description: req.body.description || db.memories[index].description,
+      author: req.body.author || db.memories[index].author,
+      imageUrl
+    };
+    saveDB(db);
+    return res.json({ success: true, memory: db.memories[index] });
+  }
+  res.status(404).json({ success: false, message: 'Memory not found' });
+});
+
 app.delete('/api/memories/:id', (req, res) => {
   const db = getDB();
   db.memories = db.memories.filter(m => m.id !== req.params.id);
@@ -192,6 +214,29 @@ app.post('/api/members', upload.single('avatarFile'), (req, res) => {
   db.members.push(newMember);
   saveDB(db);
   res.json({ success: true, member: newMember });
+});
+
+app.put('/api/members/:id', upload.single('avatarFile'), (req, res) => {
+  const db = getDB();
+  const index = db.members.findIndex(m => m.id === req.params.id);
+  if (index !== -1) {
+    let avatar = req.body.avatar || db.members[index].avatar;
+    if (req.file) {
+      avatar = `/uploads/${req.file.filename}`;
+    }
+    db.members[index] = {
+      ...db.members[index],
+      name: req.body.name || db.members[index].name,
+      role: req.body.role || db.members[index].role,
+      quote: req.body.quote || db.members[index].quote,
+      social: req.body.social || db.members[index].social,
+      status: req.body.status || db.members[index].status,
+      avatar
+    };
+    saveDB(db);
+    return res.json({ success: true, member: db.members[index] });
+  }
+  res.status(404).json({ success: false, message: 'Member not found' });
 });
 
 app.delete('/api/members/:id', (req, res) => {
@@ -254,6 +299,13 @@ app.post('/api/guestbook', (req, res) => {
   db.guestbook.unshift(newMsg);
   saveDB(db);
   res.json({ success: true, entry: newMsg });
+});
+
+app.delete('/api/guestbook/:id', (req, res) => {
+  const db = getDB();
+  db.guestbook = db.guestbook.filter(g => g.id !== req.params.id);
+  saveDB(db);
+  res.json({ success: true });
 });
 
 // Setup Vite development server middleware or production static server
