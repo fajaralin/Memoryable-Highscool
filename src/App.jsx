@@ -8,6 +8,7 @@ import MusicPlayer from './components/MusicPlayer';
 import MemoryWall from './components/MemoryWall';
 import CircleRoster from './components/CircleRoster';
 import AdminDashboard from './components/AdminDashboard';
+import FloatingParticles from './components/FloatingParticles';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('timeline');
@@ -95,6 +96,23 @@ export default function App() {
 
     tryAutoplay();
 
+    // Scroll Reveal Observer
+    const observerCallback = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, {
+      threshold: 0.1,
+      rootMargin: '0px 0px -40px 0px'
+    });
+
+    const revealElements = document.querySelectorAll('.scroll-reveal, .scroll-reveal-left, .scroll-reveal-right');
+    revealElements.forEach((el) => observer.observe(el));
+
     // Listener for manual /admin route or #admin hash
     const handleCheckAdminRoute = () => {
       const path = window.location.pathname.toLowerCase();
@@ -111,10 +129,11 @@ export default function App() {
       if (bgAudioRef.current) {
         bgAudioRef.current.pause();
       }
+      observer.disconnect();
       window.removeEventListener('popstate', handleCheckAdminRoute);
       window.removeEventListener('hashchange', handleCheckAdminRoute);
     };
-  }, []);
+  }, [timeline, memories, members, songs]);
 
   // Toggle Background Music (.Feast - Nina)
   const toggleBgMusic = () => {
@@ -178,6 +197,9 @@ export default function App() {
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--paper)', position: 'relative' }}>
+      {/* Floating Memory Ambient Particles */}
+      <FloatingParticles />
+
       {/* Navbar */}
       <Navbar
         activeTab={activeTab}
@@ -187,7 +209,7 @@ export default function App() {
       />
 
       {/* Main Page Layout */}
-      <main>
+      <main style={{ position: 'relative', zIndex: 2 }}>
         <HeroSection
           onExplore={() => {
             const el = document.getElementById('foto-kelas') || document.getElementById('linimasa');
@@ -196,36 +218,48 @@ export default function App() {
         />
 
         {/* Foto Kelas Bersama Guru Wali */}
-        <ClassPhotoSection
-          initialClassPhoto={classPhoto}
-          onUpdateClassPhoto={fetchData}
-        />
+        <div className="scroll-reveal">
+          <ClassPhotoSection
+            initialClassPhoto={classPhoto}
+            onUpdateClassPhoto={fetchData}
+          />
+        </div>
 
-        <TimelineSection
-          timeline={timeline}
-          memories={memories}
-          onAddMemory={handleAddMemory}
-        />
+        <div className="scroll-reveal">
+          <TimelineSection
+            timeline={timeline}
+            memories={memories}
+            onAddMemory={handleAddMemory}
+          />
+        </div>
 
-        <GallerySection
-          memories={memories}
-          onAddMemory={handleAddMemory}
-        />
+        <div className="scroll-reveal">
+          <GallerySection
+            memories={memories}
+            onAddMemory={handleAddMemory}
+          />
+        </div>
 
-        <MusicPlayer
-          songs={songs}
-          onAddSong={handleAddSong}
-        />
+        <div className="scroll-reveal">
+          <MusicPlayer
+            songs={songs}
+            onAddSong={handleAddSong}
+          />
+        </div>
 
-        <MemoryWall
-          messages={guestbook}
-          onPostMessage={handlePostGuestbook}
-        />
+        <div className="scroll-reveal">
+          <MemoryWall
+            messages={guestbook}
+            onPostMessage={handlePostGuestbook}
+          />
+        </div>
 
-        <CircleRoster
-          members={members}
-          onSendNote={handlePostGuestbook}
-        />
+        <div className="scroll-reveal">
+          <CircleRoster
+            members={members}
+            onSendNote={handlePostGuestbook}
+          />
+        </div>
       </main>
 
       {/* Footer from kenangan-smk-concept */}
