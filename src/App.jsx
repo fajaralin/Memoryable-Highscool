@@ -14,6 +14,7 @@ export default function App() {
   const [isAdminOpen, setIsAdminOpen] = useState(false);
 
   // Data States
+  const [classPhoto, setClassPhoto] = useState(null);
   const [timeline, setTimeline] = useState([]);
   const [memories, setMemories] = useState([]);
   const [members, setMembers] = useState([]);
@@ -28,7 +29,8 @@ export default function App() {
   // Fetch Data from Backend
   const fetchData = async () => {
     try {
-      const [tlRes, memRes, mbrRes, sngRes, gbRes] = await Promise.all([
+      const [cpRes, tlRes, memRes, mbrRes, sngRes, gbRes] = await Promise.all([
+        fetch('/api/class-photo'),
         fetch('/api/timeline'),
         fetch('/api/memories'),
         fetch('/api/members'),
@@ -36,6 +38,7 @@ export default function App() {
         fetch('/api/guestbook')
       ]);
 
+      if (cpRes.ok) setClassPhoto(await cpRes.json());
       if (tlRes.ok) setTimeline(await tlRes.json());
       if (memRes.ok) setMemories(await memRes.json());
       if (mbrRes.ok) setMembers(await mbrRes.json());
@@ -180,7 +183,10 @@ export default function App() {
         />
 
         {/* Foto Kelas Bersama Guru Wali */}
-        <ClassPhotoSection />
+        <ClassPhotoSection
+          initialClassPhoto={classPhoto}
+          onUpdateClassPhoto={fetchData}
+        />
 
         <TimelineSection
           timeline={timeline}

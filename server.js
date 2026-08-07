@@ -68,6 +68,43 @@ app.post('/api/admin/settings', (req, res) => {
   res.json({ success: true, settings: db.settings });
 });
 
+// Class Photo API
+app.get('/api/class-photo', (req, res) => {
+  const db = getDB();
+  const defaultPhoto = {
+    imageUrl: '/class_photo.webp',
+    className: 'XII RPL 1 — SMK Angkatan 2020–2023',
+    teacherName: 'Drs. H. Mulyadi, M.Pd',
+    teacherRole: 'Guru Wali Kelas Utama',
+    quote: '“Sukses selalu untuk kalian semua. Meskipun masa SMK diwarnai PJJ dan pandemi, kalian terbukti tangguh, kreatif, dan luar biasa!”',
+    totalStudents: '36 Siswa'
+  };
+  res.json(db.classPhoto || defaultPhoto);
+});
+
+app.post('/api/class-photo', upload.single('image'), (req, res) => {
+  const db = getDB();
+  const currentPhoto = db.classPhoto || {};
+
+  let imageUrl = req.body.imageUrl || currentPhoto.imageUrl || '/class_photo.webp';
+  if (req.file) {
+    imageUrl = `/uploads/${req.file.filename}`;
+  }
+
+  const updatedClassPhoto = {
+    imageUrl,
+    className: req.body.className || currentPhoto.className || 'XII RPL 1 — SMK Angkatan 2020–2023',
+    teacherName: req.body.teacherName || currentPhoto.teacherName || 'Drs. H. Mulyadi, M.Pd',
+    teacherRole: req.body.teacherRole || currentPhoto.teacherRole || 'Guru Wali Kelas Utama',
+    quote: req.body.quote !== undefined ? req.body.quote : (currentPhoto.quote || ''),
+    totalStudents: req.body.totalStudents || currentPhoto.totalStudents || '36 Siswa'
+  };
+
+  db.classPhoto = updatedClassPhoto;
+  saveDB(db);
+  res.json({ success: true, classPhoto: updatedClassPhoto });
+});
+
 // Timeline API
 app.get('/api/timeline', (req, res) => {
   const db = getDB();

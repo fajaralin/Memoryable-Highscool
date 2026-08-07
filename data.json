@@ -3,6 +3,14 @@
     "circlePasscode": "2023",
     "adminPin": "1234"
   },
+  "classPhoto": {
+    "imageUrl": "/class_photo.webp",
+    "className": "XII RPL 1 — SMK Angkatan 2020–2023",
+    "teacherName": "Drs. H. Mulyadi, M.Pd",
+    "teacherRole": "Guru Wali Kelas Utama",
+    "quote": "“Sukses selalu untuk kalian semua. Meskipun masa SMK diwarnai PJJ dan pandemi, kalian terbukti tangguh, kreatif, dan luar biasa!”",
+    "totalStudents": "36 Siswa"
+  },
   "timeline": [
     {
       "id": "tl-1",

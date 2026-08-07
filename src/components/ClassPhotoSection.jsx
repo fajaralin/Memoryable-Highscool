@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from 'react';
 
-export default function ClassPhotoSection() {
-  // State for Class Photo and Teacher Info (with localStorage persistence)
+export default function ClassPhotoSection({ initialClassPhoto, onUpdateClassPhoto }) {
+  const defaultPhotoState = {
+    imageUrl: '/class_photo.webp',
+    className: 'XII RPL 1 — SMK Angkatan 2020–2023',
+    teacherName: 'Drs. H. Mulyadi, M.Pd',
+    teacherRole: 'Guru Wali Kelas Utama',
+    quote: '“Sukses selalu untuk kalian semua. Meskipun masa SMK diwarnai PJJ dan pandemi, kalian terbukti tangguh, kreatif, dan luar biasa!”',
+    totalStudents: '36 Siswa'
+  };
+
   const [photoData, setPhotoData] = useState(() => {
     const saved = localStorage.getItem('classPhotoInfo');
     if (saved) {
@@ -11,18 +19,12 @@ export default function ClassPhotoSection() {
         // fallback
       }
     }
-    return {
-      imageUrl: '/class_photo.webp',
-      className: 'XII RPL 1 — SMK Angkatan 2020–2023',
-      teacherName: 'Drs. H. Mulyadi, M.Pd',
-      teacherRole: 'Guru Wali Kelas Utama',
-      quote: '“Sukses selalu untuk kalian semua. Meskipun masa SMK diwarnai PJJ dan pandemi, kalian terbukti tangguh, kreatif, dan luar biasa!”',
-      totalStudents: '36 Siswa'
-    };
+    return initialClassPhoto || defaultPhotoState;
   });
 
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   // Edit Form state
   const [editImageUrl, setEditImageUrl] = useState(photoData.imageUrl);
@@ -30,27 +32,100 @@ export default function ClassPhotoSection() {
   const [editTeacherName, setEditTeacherName] = useState(photoData.teacherName);
   const [editTeacherRole, setEditTeacherRole] = useState(photoData.teacherRole);
   const [editQuote, setEditQuote] = useState(photoData.quote);
+  const [uploadFile, setUploadFile] = useState(null);
 
+  // Fetch from API backend on mount
   useEffect(() => {
-    localStorage.setItem('classPhotoInfo', JSON.stringify(photoData));
-  }, [photoData]);
+    const fetchClassPhoto = async () => {
+      try {
+        const res = await fetch('/api/class-photo');
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.imageUrl) {
+            setPhotoData(data);
+            localStorage.setItem('classPhotoInfo', JSON.stringify(data));
+          }
+        }
+      } catch (err) {
+        console.log('Using local state for class photo');
+      }
+    };
+    fetchClassPhoto();
+  }, []);
 
-  const handleSaveEdit = (e) => {
+  // Update edit form fields whenever modal opens or photoData changes
+  useEffect(() => {
+    setEditImageUrl(photoData.imageUrl);
+    setEditClassName(photoData.className);
+    setEditTeacherName(photoData.teacherName);
+    setEditTeacherRole(photoData.teacherRole);
+    setEditQuote(photoData.quote);
+  }, [photoData, isEditOpen]);
+
+  const handleSaveEdit = async (e) => {
     e.preventDefault();
-    setPhotoData({
-      imageUrl: editImageUrl || '/class_photo.png',
-      className: editClassName || 'XII RPL 1 — SMK Angkatan 2020–2023',
-      teacherName: editTeacherName || 'Drs. H. Mulyadi, M.Pd',
-      teacherRole: editTeacherRole || 'Guru Wali Kelas Utama',
-      quote: editQuote || '',
-      totalStudents: photoData.totalStudents
-    });
-    setIsEditOpen(false);
+    setIsSaving(true);
+
+    try {
+      const formData = new FormData();
+      formData.append('className', editClassName || 'XII RPL 1 — SMK Angkatan 2020–2023');
+      formData.append('teacherName', editTeacherName || 'Drs. H. Mulyadi, M.Pd');
+      formData.append('teacherRole', editTeacherRole || 'Guru Wali Kelas Utama');
+      formData.append('quote', editQuote || '');
+
+      if (uploadFile) {
+        formData.append('image', uploadFile);
+      } else {
+        formData.append('imageUrl', editImageUrl || '/class_photo.webp');
+      }
+
+      const res = await fetch('/api/class-photo', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (res.ok) {
+        const result = await res.json();
+        if (result.classPhoto) {
+          setPhotoData(result.classPhoto);
+          localStorage.setItem('classPhotoInfo', JSON.stringify(result.classPhoto));
+        }
+      } else {
+        // Fallback update local state
+        const updated = {
+          imageUrl: editImageUrl || '/class_photo.webp',
+          className: editClassName,
+          teacherName: editTeacherName,
+          teacherRole: editTeacherRole,
+          quote: editQuote,
+          totalStudents: photoData.totalStudents
+        };
+        setPhotoData(updated);
+        localStorage.setItem('classPhotoInfo', JSON.stringify(updated));
+      }
+    } catch (err) {
+      console.log('API save error, updated locally', err);
+      const updated = {
+        imageUrl: editImageUrl || '/class_photo.webp',
+        className: editClassName,
+        teacherName: editTeacherName,
+        teacherRole: editTeacherRole,
+        quote: editQuote,
+        totalStudents: photoData.totalStudents
+      };
+      setPhotoData(updated);
+      localStorage.setItem('classPhotoInfo', JSON.stringify(updated));
+    } finally {
+      setIsSaving(false);
+      setIsEditOpen(false);
+      setUploadFile(null);
+    }
   };
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
+      setUploadFile(file);
       const reader = new FileReader();
       reader.onload = (uploadEvent) => {
         setEditImageUrl(uploadEvent.target.result);
@@ -64,15 +139,15 @@ export default function ClassPhotoSection() {
       id="foto-kelas" 
       style={{
         position: 'relative',
-        padding: '70px 20px 80px',
+        padding: '50px 14px 65px',
         background: 'linear-gradient(180deg, rgba(35,48,74,0.03) 0%, rgba(196,153,110,0.12) 50%, rgba(234,224,203,0) 100%)',
         borderTop: '2px dashed rgba(122,46,53,0.2)',
         borderBottom: '2px dashed rgba(122,46,53,0.2)',
-        margin: '20px 0 40px'
+        margin: '20px 0 30px'
       }}
     >
       {/* Header Info */}
-      <div style={{ textAlign: 'center', maxWidth: '800px', margin: '0 auto 40px' }}>
+      <div style={{ textAlign: 'center', maxWidth: '800px', margin: '0 auto 30px', padding: '0 8px' }}>
         <div 
           className="label" 
           style={{
@@ -81,11 +156,11 @@ export default function ClassPhotoSection() {
             gap: '8px',
             background: 'var(--maroon)',
             color: 'var(--paper)',
-            padding: '6px 16px',
+            padding: '5px 14px',
             borderRadius: '20px',
-            fontSize: '0.78rem',
+            fontSize: '0.72rem',
             letterSpacing: '0.12em',
-            marginBottom: '14px',
+            marginBottom: '12px',
             boxShadow: '0 4px 10px rgba(122,46,53,0.25)'
           }}
         >
@@ -95,16 +170,16 @@ export default function ClassPhotoSection() {
         <h2 
           className="font-caveat" 
           style={{
-            fontSize: 'clamp(2.5rem, 5vw, 3.8rem)',
+            fontSize: 'clamp(2.2rem, 6vw, 3.8rem)',
             color: 'var(--ink)',
             lineHeight: 1.1,
-            marginBottom: '12px'
+            marginBottom: '10px'
           }}
         >
           Foto Kebersamaan Satu Kelas & Wali Kelas
         </h2>
 
-        <p style={{ fontSize: '1.05rem', color: 'var(--ink-soft)', lineHeight: 1.6 }}>
+        <p style={{ fontSize: 'clamp(0.9rem, 2.5vw, 1.05rem)', color: 'var(--ink-soft)', lineHeight: 1.5 }}>
           Potret penuh kenangan seluruh anggota kelas didampingi Bapak/Ibu Guru Wali Kelas tercinta.
           Momen bersejarah masa SMK angkatan 2020–2023.
         </p>
@@ -120,58 +195,59 @@ export default function ClassPhotoSection() {
       >
         {/* Washi Tapes on Top Left & Top Right of Frame */}
         <div 
-          className="washi" 
+          className="washi hidden sm:block" 
           style={{ 
             top: '-18px', 
-            left: '30px', 
+            left: '20px', 
             transform: 'rotate(-8deg)',
             zIndex: 10,
-            width: '130px',
-            height: '32px'
+            width: '110px',
+            height: '28px'
           }} 
         />
         <div 
-          className="washi" 
+          className="washi hidden sm:block" 
           style={{ 
             top: '-18px', 
-            right: '30px', 
+            right: '20px', 
             transform: 'rotate(6deg)',
             zIndex: 10,
-            width: '130px',
-            height: '32px'
+            width: '110px',
+            height: '28px'
           }} 
         />
 
         {/* Master Deluxe Frame */}
         <div
+          className="class-frame-outer"
           style={{
             position: 'relative',
             background: 'linear-gradient(145deg, #2b1810 0%, #4a2918 35%, #2b1810 70%, #170d08 100%)',
             borderRadius: '12px',
-            padding: '24px',
+            padding: '16px',
             boxShadow: `
-              0 25px 50px -12px rgba(0, 0, 0, 0.5),
+              0 20px 45px -10px rgba(0, 0, 0, 0.5),
               0 0 0 1px rgba(255, 215, 0, 0.25),
               inset 0 0 15px rgba(0, 0, 0, 0.8),
               inset 0 0 3px 2px rgba(212, 175, 55, 0.4)
             `,
-            border: '8px solid #3d2314'
+            border: '6px solid #3d2314'
           }}
         >
           {/* Gold Decorative Corner Brackets */}
-          <div style={{ position: 'absolute', top: '10px', left: '10px', width: '30px', height: '30px', borderTop: '3px solid #dfb76c', borderLeft: '3px solid #dfb76c', zIndex: 3 }} />
-          <div style={{ position: 'absolute', top: '10px', right: '10px', width: '30px', height: '30px', borderTop: '3px solid #dfb76c', borderRight: '3px solid #dfb76c', zIndex: 3 }} />
-          <div style={{ position: 'absolute', bottom: '10px', left: '10px', width: '30px', height: '30px', borderBottom: '3px solid #dfb76c', borderLeft: '3px solid #dfb76c', zIndex: 3 }} />
-          <div style={{ position: 'absolute', bottom: '10px', right: '10px', width: '30px', height: '30px', borderBottom: '3px solid #dfb76c', borderRight: '3px solid #dfb76c', zIndex: 3 }} />
+          <div style={{ position: 'absolute', top: '8px', left: '8px', width: '22px', height: '22px', borderTop: '3px solid #dfb76c', borderLeft: '3px solid #dfb76c', zIndex: 3 }} />
+          <div style={{ position: 'absolute', top: '8px', right: '8px', width: '22px', height: '22px', borderTop: '3px solid #dfb76c', borderRight: '3px solid #dfb76c', zIndex: 3 }} />
+          <div style={{ position: 'absolute', bottom: '8px', left: '8px', width: '22px', height: '22px', borderBottom: '3px solid #dfb76c', borderLeft: '3px solid #dfb76c', zIndex: 3 }} />
+          <div style={{ position: 'absolute', bottom: '8px', right: '8px', width: '22px', height: '22px', borderBottom: '3px solid #dfb76c', borderRight: '3px solid #dfb76c', zIndex: 3 }} />
 
           {/* Wax Stamp Seal */}
           <div 
             style={{
               position: 'absolute',
-              top: '-15px',
-              right: '-15px',
-              width: '72px',
-              height: '72px',
+              top: '-12px',
+              right: '-10px',
+              width: '62px',
+              height: '62px',
               borderRadius: '50%',
               background: 'radial-gradient(circle at 30% 30%, #a8323e, #661820)',
               color: '#fbe8d3',
@@ -179,17 +255,17 @@ export default function ClassPhotoSection() {
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '0.6rem',
+              fontSize: '0.55rem',
               fontWeight: 'bold',
               textAlign: 'center',
-              border: '3px dashed #d4af37',
+              border: '2px dashed #d4af37',
               boxShadow: '0 6px 16px rgba(0,0,0,0.4)',
               transform: 'rotate(14deg)',
               zIndex: 12,
               lineHeight: 1.2
             }}
           >
-            <span style={{ fontSize: '1rem', marginBottom: '2px' }}>🎗️</span>
+            <span style={{ fontSize: '0.9rem', marginBottom: '1px' }}>🎗️</span>
             SEAL OF<br/>CLASS
           </div>
 
@@ -197,9 +273,9 @@ export default function ClassPhotoSection() {
           <div
             style={{
               background: '#fdfcf7',
-              padding: '20px 20px 48px',
+              padding: '12px 12px 42px',
               borderRadius: '4px',
-              boxShadow: 'inset 0 0 20px rgba(0,0,0,0.25), 0 2px 4px rgba(0,0,0,0.1)',
+              boxShadow: 'inset 0 0 15px rgba(0,0,0,0.2), 0 2px 4px rgba(0,0,0,0.1)',
               border: '2px solid #c59b27',
               position: 'relative'
             }}
@@ -210,8 +286,8 @@ export default function ClassPhotoSection() {
                 position: 'relative',
                 borderRadius: '2px',
                 overflow: 'hidden',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
-                border: '3px solid #e0c38c',
+                boxShadow: '0 4px 16px rgba(0,0,0,0.25)',
+                border: '2px solid #e0c38c',
                 cursor: 'pointer'
               }}
               onClick={() => setIsLightboxOpen(true)}
@@ -224,13 +300,13 @@ export default function ClassPhotoSection() {
                 decoding="async"
                 style={{
                   width: '100%',
-                  maxHeight: '620px',
+                  maxHeight: '600px',
                   objectFit: 'cover',
                   display: 'block',
-                  transition: 'transform 0.5s ease',
+                  transition: 'transform 0.4s ease',
                   filter: 'contrast(1.03) saturate(1.05)'
                 }}
-                onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.025)'}
+                onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
                 onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
               />
 
@@ -239,21 +315,21 @@ export default function ClassPhotoSection() {
                 className="font-special"
                 style={{
                   position: 'absolute',
-                  bottom: '16px',
-                  right: '16px',
-                  background: 'rgba(35,48,74,0.85)',
+                  bottom: '10px',
+                  right: '10px',
+                  background: 'rgba(35,48,74,0.88)',
                   color: '#fff',
-                  padding: '8px 14px',
-                  borderRadius: '20px',
-                  fontSize: '0.75rem',
+                  padding: '6px 12px',
+                  borderRadius: '16px',
+                  fontSize: '0.7rem',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '6px',
+                  gap: '4px',
                   backdropFilter: 'blur(4px)',
                   boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
                 }}
               >
-                <span>🔍</span> Klik untuk perbesar (Fullscreen)
+                <span>🔍</span> Perbesar (Fullscreen)
               </div>
             </div>
 
@@ -261,42 +337,48 @@ export default function ClassPhotoSection() {
             <div
               style={{
                 position: 'absolute',
-                bottom: '10px',
+                bottom: '6px',
                 left: '50%',
                 transform: 'translateX(-50%)',
                 background: 'linear-gradient(135deg, #d4af37 0%, #fff3a8 25%, #b8860b 60%, #e6ca65 100%)',
-                padding: '6px 28px',
+                padding: '5px 18px',
                 borderRadius: '4px',
                 boxShadow: '0 4px 10px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.8), inset 0 -1px 0 rgba(0,0,0,0.4)',
                 border: '1px solid #7c5c16',
                 textAlign: 'center',
-                minWidth: '280px',
-                maxWidth: '90%'
+                minWidth: '220px',
+                maxWidth: '94%'
               }}
             >
               {/* Screws/Rivets */}
-              <div style={{ position: 'absolute', top: '50%', left: '8px', transform: 'translateY(-50%)', width: '6px', height: '6px', borderRadius: '50%', background: '#5c430e', boxShadow: 'inset 0 1px 1px rgba(0,0,0,0.8)' }} />
-              <div style={{ position: 'absolute', top: '50%', right: '8px', transform: 'translateY(-50%)', width: '6px', height: '6px', borderRadius: '50%', background: '#5c430e', boxShadow: 'inset 0 1px 1px rgba(0,0,0,0.8)' }} />
+              <div style={{ position: 'absolute', top: '50%', left: '6px', transform: 'translateY(-50%)', width: '5px', height: '5px', borderRadius: '50%', background: '#5c430e', boxShadow: 'inset 0 1px 1px rgba(0,0,0,0.8)' }} />
+              <div style={{ position: 'absolute', top: '50%', right: '6px', transform: 'translateY(-50%)', width: '5px', height: '5px', borderRadius: '50%', background: '#5c430e', boxShadow: 'inset 0 1px 1px rgba(0,0,0,0.8)' }} />
 
               <div 
                 className="font-special" 
                 style={{
-                  fontSize: '0.78rem',
+                  fontSize: 'clamp(0.65rem, 2.2vw, 0.78rem)',
                   fontWeight: 'bold',
-                  letterSpacing: '0.12em',
+                  letterSpacing: '0.1em',
                   color: '#2a1c04',
                   textTransform: 'uppercase',
-                  textShadow: '0 1px 0 rgba(255,255,255,0.4)'
+                  textShadow: '0 1px 0 rgba(255,255,255,0.4)',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
                 }}
               >
                 FOTO KELAS & GURU WALI TERCINTA
               </div>
               <div 
                 style={{
-                  fontSize: '0.7rem',
+                  fontSize: 'clamp(0.6rem, 2vw, 0.7rem)',
                   color: '#473209',
                   fontWeight: '600',
-                  marginTop: '1px'
+                  marginTop: '1px',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
                 }}
               >
                 {photoData.className}
@@ -308,49 +390,49 @@ export default function ClassPhotoSection() {
         {/* Info & Action Cards Bar */}
         <div 
           style={{
-            marginTop: '28px',
+            marginTop: '22px',
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: '20px'
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '16px'
           }}
         >
           {/* Homeroom Teacher Details Card */}
           <div
             style={{
               background: 'var(--polaroid)',
-              padding: '20px',
+              padding: '16px 18px',
               borderRadius: '8px',
               border: '1px solid rgba(196,153,110,0.4)',
-              boxShadow: '0 8px 20px rgba(35,26,15,0.08)',
+              boxShadow: '0 6px 16px rgba(35,26,15,0.06)',
               display: 'flex',
-              gap: '16px',
+              gap: '14px',
               alignItems: 'flex-start'
             }}
           >
             <div 
               style={{
-                width: '60px',
-                height: '60px',
+                width: '52px',
+                height: '52px',
                 borderRadius: '50%',
                 background: 'linear-gradient(135deg, var(--teal), var(--ink))',
                 color: '#fff',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: '1.8rem',
+                fontSize: '1.6rem',
                 flexShrink: 0,
                 border: '2px solid var(--paper)',
-                boxShadow: '0 4px 10px rgba(0,0,0,0.15)'
+                boxShadow: '0 4px 8px rgba(0,0,0,0.15)'
               }}
             >
               👨‍🏫
             </div>
             <div>
-              <span className="label" style={{ color: 'var(--maroon)' }}>{photoData.teacherRole}</span>
-              <h3 style={{ fontSize: '1.2rem', color: 'var(--ink)', margin: '4px 0 6px', fontWeight: 700 }}>
+              <span className="label" style={{ color: 'var(--maroon)', fontSize: '0.68rem' }}>{photoData.teacherRole}</span>
+              <h3 style={{ fontSize: '1.1rem', color: 'var(--ink)', margin: '2px 0 4px', fontWeight: 700 }}>
                 {photoData.teacherName}
               </h3>
-              <p className="scrawl" style={{ fontSize: '1.15rem', color: 'var(--ink-soft)', lineHeight: 1.3 }}>
+              <p className="scrawl" style={{ fontSize: '1.05rem', color: 'var(--ink-soft)', lineHeight: 1.3 }}>
                 {photoData.quote}
               </p>
             </div>
@@ -360,42 +442,43 @@ export default function ClassPhotoSection() {
           <div
             style={{
               background: 'var(--polaroid)',
-              padding: '20px',
+              padding: '16px 18px',
               borderRadius: '8px',
               border: '1px solid rgba(196,153,110,0.4)',
-              boxShadow: '0 8px 20px rgba(35,26,15,0.08)',
+              boxShadow: '0 6px 16px rgba(35,26,15,0.06)',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between'
             }}
           >
             <div>
-              <span className="label">Informasi Kebersamaan</span>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginTop: '10px' }}>
-                <span style={{ background: 'var(--paper)', padding: '6px 12px', borderRadius: '16px', fontSize: '0.82rem', fontWeight: 600, border: '1px solid rgba(0,0,0,0.08)' }}>
-                  🎓 Angkatan: 2020 – 2023
+              <span className="label" style={{ fontSize: '0.68rem' }}>Informasi Kebersamaan</span>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '8px' }}>
+                <span style={{ background: 'var(--paper)', padding: '5px 10px', borderRadius: '14px', fontSize: '0.78rem', fontWeight: 600, border: '1px solid rgba(0,0,0,0.08)' }}>
+                  🎓 Angkatan: 2020–2023
                 </span>
-                <span style={{ background: 'var(--paper)', padding: '6px 12px', borderRadius: '16px', fontSize: '0.82rem', fontWeight: 600, border: '1px solid rgba(0,0,0,0.08)' }}>
-                  👥 Kapasitas: {photoData.totalStudents}
+                <span style={{ background: 'var(--paper)', padding: '5px 10px', borderRadius: '14px', fontSize: '0.78rem', fontWeight: 600, border: '1px solid rgba(0,0,0,0.08)' }}>
+                  👥 {photoData.totalStudents}
                 </span>
-                <span style={{ background: 'var(--paper)', padding: '6px 12px', borderRadius: '16px', fontSize: '0.82rem', fontWeight: 600, border: '1px solid rgba(0,0,0,0.08)' }}>
-                  ❤️ Kebersamaan: Selamanya
+                <span style={{ background: 'var(--paper)', padding: '5px 10px', borderRadius: '14px', fontSize: '0.78rem', fontWeight: 600, border: '1px solid rgba(0,0,0,0.08)' }}>
+                  ❤️ Kebersamaan Selamanya
                 </span>
               </div>
             </div>
 
-            <div style={{ display: 'flex', gap: '10px', marginTop: '16px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: '10px', marginTop: '14px', flexWrap: 'wrap' }}>
               <button
                 className="font-special"
                 onClick={() => setIsEditOpen(true)}
                 style={{
                   flex: 1,
-                  padding: '10px 16px',
+                  minHeight: '42px',
+                  padding: '8px 14px',
                   background: 'var(--teal)',
                   color: '#fff',
                   border: 'none',
                   borderRadius: '6px',
-                  fontSize: '0.82rem',
+                  fontSize: '0.78rem',
                   fontWeight: 'bold',
                   cursor: 'pointer',
                   display: 'flex',
@@ -406,19 +489,20 @@ export default function ClassPhotoSection() {
                   transition: 'all 0.2s ease'
                 }}
               >
-                ✏️ Ganti Foto / Info Kelas
+                ✏️ Ganti / Edit Foto Online
               </button>
 
               <button
                 className="font-special"
                 onClick={() => setIsLightboxOpen(true)}
                 style={{
-                  padding: '10px 16px',
+                  minHeight: '42px',
+                  padding: '8px 14px',
                   background: 'var(--ink)',
                   color: '#fff',
                   border: 'none',
                   borderRadius: '6px',
-                  fontSize: '0.82rem',
+                  fontSize: '0.78rem',
                   fontWeight: 'bold',
                   cursor: 'pointer',
                   display: 'flex',
@@ -427,7 +511,7 @@ export default function ClassPhotoSection() {
                   boxShadow: '0 4px 10px rgba(35,48,74,0.3)'
                 }}
               >
-                🔍 Perbesar Foto
+                🔍 Perbesar
               </button>
             </div>
           </div>
@@ -441,20 +525,20 @@ export default function ClassPhotoSection() {
             position: 'fixed',
             inset: 0,
             zIndex: 99999,
-            background: 'rgba(15, 20, 30, 0.92)',
+            background: 'rgba(15, 20, 30, 0.94)',
             backdropFilter: 'blur(8px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '20px'
+            padding: '16px'
           }}
           onClick={() => setIsLightboxOpen(false)}
         >
           <div
             style={{
               position: 'relative',
-              maxWidth: '92vw',
-              maxHeight: '92vh',
+              maxWidth: '96vw',
+              maxHeight: '94vh',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center'
@@ -466,9 +550,9 @@ export default function ClassPhotoSection() {
               onClick={() => setIsLightboxOpen(false)}
               style={{
                 position: 'absolute',
-                top: '-45px',
+                top: '-42px',
                 right: '0',
-                background: 'rgba(255,255,255,0.2)',
+                background: 'rgba(255,255,255,0.25)',
                 color: '#fff',
                 border: 'none',
                 width: '36px',
@@ -487,11 +571,11 @@ export default function ClassPhotoSection() {
             {/* Lightbox Image with Frame */}
             <div
               style={{
-                border: '12px solid #3d2314',
+                border: '8px solid #3d2314',
                 borderRadius: '8px',
                 boxShadow: '0 25px 60px rgba(0,0,0,0.8)',
                 background: '#fff',
-                padding: '12px',
+                padding: '8px',
                 maxHeight: '82vh',
                 overflow: 'hidden'
               }}
@@ -513,9 +597,9 @@ export default function ClassPhotoSection() {
               className="font-special"
               style={{
                 color: '#fff',
-                marginTop: '16px',
+                marginTop: '12px',
                 textAlign: 'center',
-                fontSize: '0.9rem',
+                fontSize: '0.82rem',
                 opacity: 0.9
               }}
             >
@@ -532,12 +616,13 @@ export default function ClassPhotoSection() {
             position: 'fixed',
             inset: 0,
             zIndex: 99999,
-            background: 'rgba(0,0,0,0.7)',
+            background: 'rgba(0,0,0,0.75)',
             backdropFilter: 'blur(4px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '20px'
+            padding: '16px',
+            overflowY: 'auto'
           }}
           onClick={() => setIsEditOpen(false)}
         >
@@ -547,16 +632,18 @@ export default function ClassPhotoSection() {
               maxWidth: '520px',
               width: '100%',
               borderRadius: '12px',
-              padding: '28px',
+              padding: '22px',
               boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
               border: '2px solid var(--cork)',
-              position: 'relative'
+              position: 'relative',
+              maxHeight: '90vh',
+              overflowY: 'auto'
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h3 style={{ fontSize: '1.3rem', color: 'var(--ink)', margin: 0 }}>
-                ✏️ Edit Foto Kelas & Wali Kelas
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <h3 style={{ fontSize: '1.2rem', color: 'var(--ink)', margin: 0 }}>
+                ✏️ Edit / Ganti Foto Kelas Online
               </h3>
               <button
                 onClick={() => setIsEditOpen(false)}
@@ -566,10 +653,10 @@ export default function ClassPhotoSection() {
               </button>
             </div>
 
-            <form onSubmit={handleSaveEdit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <form onSubmit={handleSaveEdit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               <div>
-                <label className="label" style={{ display: 'block', marginBottom: '6px' }}>
-                  Upload Foto Baru (dari Komputer):
+                <label className="label" style={{ display: 'block', marginBottom: '4px', fontSize: '0.7rem' }}>
+                  Upload Foto Baru (dari Galeri HP / Komputer):
                 </label>
                 <input
                   type="file"
@@ -581,33 +668,33 @@ export default function ClassPhotoSection() {
                     background: 'var(--polaroid)',
                     border: '1px solid var(--cork)',
                     borderRadius: '6px',
-                    fontSize: '0.85rem'
+                    fontSize: '0.82rem'
                   }}
                 />
               </div>
 
               <div>
-                <label className="label" style={{ display: 'block', marginBottom: '6px' }}>
-                  Atau Input URL Foto Kelas:
+                <label className="label" style={{ display: 'block', marginBottom: '4px', fontSize: '0.7rem' }}>
+                  Atau Input URL Foto Kelas (Online):
                 </label>
                 <input
                   type="text"
                   value={editImageUrl}
                   onChange={(e) => setEditImageUrl(e.target.value)}
-                  placeholder="https://... atau /class_photo.png"
+                  placeholder="https://... atau /class_photo.webp"
                   style={{
                     width: '100%',
                     padding: '10px',
                     background: 'var(--polaroid)',
                     border: '1px solid var(--cork)',
                     borderRadius: '6px',
-                    fontSize: '0.9rem'
+                    fontSize: '0.85rem'
                   }}
                 />
               </div>
 
               <div>
-                <label className="label" style={{ display: 'block', marginBottom: '6px' }}>
+                <label className="label" style={{ display: 'block', marginBottom: '4px', fontSize: '0.7rem' }}>
                   Nama Kelas & Angkatan:
                 </label>
                 <input
@@ -620,13 +707,13 @@ export default function ClassPhotoSection() {
                     background: 'var(--polaroid)',
                     border: '1px solid var(--cork)',
                     borderRadius: '6px',
-                    fontSize: '0.9rem'
+                    fontSize: '0.85rem'
                   }}
                 />
               </div>
 
               <div>
-                <label className="label" style={{ display: 'block', marginBottom: '6px' }}>
+                <label className="label" style={{ display: 'block', marginBottom: '4px', fontSize: '0.7rem' }}>
                   Nama Wali Kelas:
                 </label>
                 <input
@@ -639,14 +726,14 @@ export default function ClassPhotoSection() {
                     background: 'var(--polaroid)',
                     border: '1px solid var(--cork)',
                     borderRadius: '6px',
-                    fontSize: '0.9rem'
+                    fontSize: '0.85rem'
                   }}
                 />
               </div>
 
               <div>
-                <label className="label" style={{ display: 'block', marginBottom: '6px' }}>
-                  Pesan / Pesan Kesan Guru Wali:
+                <label className="label" style={{ display: 'block', marginBottom: '4px', fontSize: '0.7rem' }}>
+                  Pesan / Kesan Guru Wali:
                 </label>
                 <textarea
                   rows="3"
@@ -658,7 +745,7 @@ export default function ClassPhotoSection() {
                     background: 'var(--polaroid)',
                     border: '1px solid var(--cork)',
                     borderRadius: '6px',
-                    fontSize: '0.9rem'
+                    fontSize: '0.85rem'
                   }}
                 />
               </div>
@@ -669,7 +756,8 @@ export default function ClassPhotoSection() {
                   onClick={() => setIsEditOpen(false)}
                   style={{
                     flex: 1,
-                    padding: '12px',
+                    minHeight: '44px',
+                    padding: '10px',
                     background: 'transparent',
                     border: '1px solid var(--ink-soft)',
                     borderRadius: '6px',
@@ -680,18 +768,21 @@ export default function ClassPhotoSection() {
                 </button>
                 <button
                   type="submit"
+                  disabled={isSaving}
                   style={{
                     flex: 1,
-                    padding: '12px',
+                    minHeight: '44px',
+                    padding: '10px',
                     background: 'var(--maroon)',
                     color: '#fff',
                     border: 'none',
                     borderRadius: '6px',
                     fontWeight: 'bold',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    opacity: isSaving ? 0.7 : 1
                   }}
                 >
-                  Simpan Perubahan
+                  {isSaving ? 'Menyimpan...' : 'Simpan ke Database'}
                 </button>
               </div>
             </form>
