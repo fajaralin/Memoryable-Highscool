@@ -22,10 +22,6 @@ export default function App() {
   const [songs, setSongs] = useState([]);
   const [guestbook, setGuestbook] = useState([]);
 
-  // Background Music (.Feast - Nina) Audio State
-  const [isBgMusicPlaying, setIsBgMusicPlaying] = useState(false);
-  const bgAudioRef = useRef(null);
-
   // Fetch Data from Backend
   const fetchData = async () => {
     try {
@@ -51,50 +47,6 @@ export default function App() {
 
   useEffect(() => {
     fetchData();
-
-    // Setup Background Music (.Feast - Nina Chorus)
-    const audio = new Audio('/audio/nina_full.webm');
-    audio.loop = true;
-    bgAudioRef.current = audio;
-
-    // Jump to chorus (reff) timestamp ~75 seconds
-    const startChorus = () => {
-      if (audio.currentTime < 75 || audio.currentTime > 165) {
-        audio.currentTime = 75;
-      }
-    };
-
-    audio.addEventListener('loadedmetadata', startChorus);
-    audio.addEventListener('timeupdate', () => {
-      // Loop chorus section (from 75s to 165s)
-      if (audio.currentTime >= 165) {
-        audio.currentTime = 75;
-      }
-    });
-
-    // Attempt Autoplay on Page Load
-    const tryAutoplay = () => {
-      audio.play().then(() => {
-        setIsBgMusicPlaying(true);
-      }).catch(() => {
-        // Autoplay blocked by browser policy until user gesture
-        console.log('Autoplay waiting for user gesture...');
-        const enableAudioOnGesture = () => {
-          audio.play().then(() => {
-            setIsBgMusicPlaying(true);
-          }).catch(() => {});
-          window.removeEventListener('click', enableAudioOnGesture);
-          window.removeEventListener('touchstart', enableAudioOnGesture);
-          window.removeEventListener('scroll', enableAudioOnGesture);
-        };
-
-        window.addEventListener('click', enableAudioOnGesture);
-        window.addEventListener('touchstart', enableAudioOnGesture);
-        window.addEventListener('scroll', enableAudioOnGesture);
-      });
-    };
-
-    tryAutoplay();
 
     // Scroll Reveal Observer
     const observerCallback = (entries) => {
@@ -126,31 +78,11 @@ export default function App() {
     window.addEventListener('popstate', handleCheckAdminRoute);
     window.addEventListener('hashchange', handleCheckAdminRoute);
     return () => {
-      if (bgAudioRef.current) {
-        bgAudioRef.current.pause();
-      }
       observer.disconnect();
       window.removeEventListener('popstate', handleCheckAdminRoute);
       window.removeEventListener('hashchange', handleCheckAdminRoute);
     };
   }, [timeline, memories, members, songs]);
-
-  // Toggle Background Music (.Feast - Nina)
-  const toggleBgMusic = () => {
-    if (!bgAudioRef.current) return;
-
-    if (isBgMusicPlaying) {
-      bgAudioRef.current.pause();
-      setIsBgMusicPlaying(false);
-    } else {
-      if (bgAudioRef.current.currentTime < 75 || bgAudioRef.current.currentTime > 165) {
-        bgAudioRef.current.currentTime = 75;
-      }
-      bgAudioRef.current.play().then(() => {
-        setIsBgMusicPlaying(true);
-      }).catch(() => {});
-    }
-  };
 
   const handlePostGuestbook = async (entry) => {
     try {
@@ -204,8 +136,6 @@ export default function App() {
       <Navbar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
-        isBgMusicPlaying={isBgMusicPlaying}
-        toggleBgMusic={toggleBgMusic}
       />
 
       {/* Main Page Layout */}

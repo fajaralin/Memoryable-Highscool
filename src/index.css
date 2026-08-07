@@ -933,3 +933,132 @@ section {
 .class-frame-outer:hover {
   box-shadow: 0 30px 60px -10px rgba(0, 0, 0, 0.65), 0 0 25px rgba(212, 175, 55, 0.4) !important;
 }
+
+/* ==========================================================================
+   ULTRA-RESPONSIVE MOBILE STYLES (< 768px & < 480px)
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  /* Body & Layout Container */
+  body {
+    font-size: 0.95rem;
+    overflow-x: hidden;
+  }
+
+  /* Hero Section Mobile */
+  header.hero {
+    min-height: auto !important;
+    padding: 40px 16px 50px !important;
+  }
+
+  .stamp-private {
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    margin: 0 auto 16px !important;
+    display: inline-block !important;
+  }
+
+  .hero-title {
+    font-size: clamp(2.2rem, 8.5vw, 3.4rem) !important;
+    line-height: 1.15 !important;
+  }
+
+  .hero-sub {
+    font-size: 0.82rem !important;
+    margin-top: 12px !important;
+  }
+
+  .hero-note {
+    max-width: 100% !important;
+    padding: 14px 16px !important;
+    font-size: 0.95rem !important;
+    margin-top: 18px !important;
+  }
+
+  /* Hide floating polaroids on mobile to prevent clutter */
+  .polaroid.p1, .polaroid.p2, .polaroid.p3, .polaroid.p4 {
+    display: none !important;
+  }
+
+  /* Timeline Single Column Mobile Layout */
+  .timeline {
+    padding: 20px 0 !important;
+  }
+
+  .timeline::before {
+    left: 20px !important;
+    transform: none !important;
+  }
+
+  .t-row {
+    flex-direction: column !important;
+    margin-bottom: 32px !important;
+  }
+
+  .t-slot {
+    width: 100% !important;
+    padding-left: 48px !important;
+    padding-right: 0 !important;
+    text-align: left !important;
+  }
+
+  .t-slot-left, .t-slot-right {
+    width: 100% !important;
+  }
+
+  .t-dot {
+    left: 14px !important;
+    transform: none !important;
+  }
+
+  .t-card {
+    width: 100% !important;
+    padding: 18px !important;
+  }
+
+  .t-decor-side {
+    margin-top: 14px !important;
+  }
+
+  /* Gallery Grid Mobile (2 Columns) */
+  .gallery-board {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+    padding: 14px !important;
+  }
+
+  .g-frame img {
+    height: 120px !important;
+  }
+
+  /* Class Photo Section Mobile */
+  #foto-kelas {
+    padding: 36px 10px 48px !important;
+  }
+
+  .class-frame-outer {
+    padding: 10px !important;
+    border: 5px solid #3d2314 !important;
+  }
+
+  /* Footer Mobile */
+  footer {
+    padding: 40px 16px 36px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .gallery-board {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .g-item {
+    padding: 8px !important;
+  }
+
+  .g-cap {
+    font-size: 0.95rem !important;
+  }
+}
